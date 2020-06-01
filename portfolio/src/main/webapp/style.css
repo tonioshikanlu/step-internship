@@ -91,3 +91,26 @@ a:hover {
   background: #ff5500;
   color: white;
 }
+
+
+#div-with-bg {
+    background: url('https://cdn.pixabay.com/photo/2016/08/05/09/31/banner-1571858_960_720.jpg');
+    height: 100px;
+   left: 0;
+   margin: 0;
+   min-height: 50%;
+   min-width: 204px;
+   padding: 0;
+   top: 0;
+   width: 100%;
+   z-index: -1;
+}
+
+body {
+  background-color:#ce3635;
+  text-align: center;
+  color:#fff;
+  padding-top:10em;
+}
+
+* { color:#000000; text-decoration: none;}
