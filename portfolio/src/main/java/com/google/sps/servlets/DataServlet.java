@@ -22,6 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 
 /** Servlet that returns some example content.*/
@@ -36,9 +42,20 @@ public class DataServlet extends HttpServlet {
 
  @Override
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
- 	/** Convert to json string using gson*/
+ 	  /** Initialize query to retrieve comments from datastore*/
+    Query query = new Query("Task");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    /** Iterate over entities in datastore and retrieve each comment*/
+    List<String> tasks = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      String comment = (String) entity.getProperty("comment");
+
+      tasks.add(comment);
+    }
+  /** Convert to json string using gson*/
     Gson gson = new Gson();
-  	String json = gson.toJson(list);
+  	String json = gson.toJson(tasks);
   	response.setContentType("application/json;");
     response.getWriter().println(json);
 
@@ -48,6 +65,12 @@ public class DataServlet extends HttpServlet {
     // Accepts comment and updates list to show messages.
     String commentString = request.getParameter("comment");
     list.add(commentString);
+
+    Entity taskEntity = new Entity("Task");
+    taskEntity.setProperty("comment", commentString);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(taskEntity);
+
     // // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
   }
