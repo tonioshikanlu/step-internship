@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +32,6 @@ public class DataServlet extends HttpServlet {
 	@Override
   	public void init() {
  		list = new ArrayList<String>();
-    	list.add("Toni");
-    	list.add("Isaiah");
-    	list.add("Subomi");
 	}
 
  @Override
@@ -47,5 +43,14 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(json);
 
   }
+ @Override
+ public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Accepts comment and updates list to show messages.
+    String commentString = request.getParameter("comment");
+    list.add(commentString);
+    // // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
+  }
+
 
 }
