@@ -56,7 +56,7 @@ function addQuoteToDom(quote) {
  * whichever syntax makes the most sense to you.
  */
 function getMessageUsingArrowFunctions() {
-  fetch('/data').then(response => response.text()).then((quote) => {
+  fetch('/data?max=5').then(response => response.text()).then((quote) => {
     document.getElementById('quote-container').innerText = quote;
   });
 }

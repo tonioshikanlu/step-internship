@@ -50,12 +50,12 @@ public class DataServlet extends HttpServlet {
     Integer counter = 0;
     List<String> tasks = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
+      /** Read in comment and maximum comment number*/
       String comment = (String) entity.getProperty("comment");
-      Integer max_num = Integer.parseInt(request.getParameter("max"));
-      if (counter == 0)
-      {
-         max_num = 10;
-      };
+      String max_str = request.getParameter("max");
+      /** Error checking to ensure null values aren't passed*/
+      if (max_str == null){max_str = "5";};
+      Integer max_num = Integer.parseInt(max_str);
       
       if (max_num > counter){
         tasks.add(comment);
