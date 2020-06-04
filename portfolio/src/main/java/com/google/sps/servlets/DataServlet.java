@@ -52,6 +52,11 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       String comment = (String) entity.getProperty("comment");
       Integer max_num = Integer.parseInt(request.getParameter("max"));
+      if (counter == 0)
+      {
+         max_num = 10;
+      };
+      
       if (max_num > counter){
         tasks.add(comment);
       };
