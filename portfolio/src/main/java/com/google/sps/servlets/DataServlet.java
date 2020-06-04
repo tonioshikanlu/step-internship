@@ -32,57 +32,66 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that returns some example content.*/
 @WebServlet("/data")
-public class DataServlet extends HttpServlet {
-	/** Store different messages as elements in an array to be displayed*/
-	private ArrayList<String> list;
-	@Override
-  	public void init() {
- 		list = new ArrayList<String>();
-	}
-
- @Override
- public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
- 	  /** Initialize query to retrieve comments from datastore*/
-    Query query = new Query("Task");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-    /** Iterate over entities in datastore and retrieve each comment*/
-    Integer counter = 0;
-    List<String> tasks = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      /** Read in comment and maximum comment number*/
-      String comment = (String) entity.getProperty("comment");
-      String max_str = request.getParameter("max");
-      /** Error checking to ensure null values aren't passed*/
-      if (max_str == null){max_str = "5";};
-      Integer max_num = Integer.parseInt(max_str);
-      
-      if (max_num > counter){
-        tasks.add(comment);
-      };
-      counter ++;
+public class DataServlet extends HttpServlet
+{
+    /** Store different messages as elements in an array to be displayed*/
+    private ArrayList<String> list;
+    @Override
+    public void init()
+    {
+        list = new ArrayList<String>();
     }
-  /** Convert to json string using gson*/
-    Gson gson = new Gson();
-  	String json = gson.toJson(tasks);
-  	response.setContentType("application/json;");
-    response.getWriter().println(json);
 
-  }
- @Override
- public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Accepts comment and updates list to show messages.
-    String commentString = request.getParameter("comment");
-    list.add(commentString);
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        /** Initialize query to retrieve comments from datastore*/
+        Query query = new Query("Task");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        /** Iterate over entities in datastore and retrieve each comment*/
+        Integer counter = 0;
+        List<String> tasks = new ArrayList<>();
+        for (Entity entity : results.asIterable())
+        {
+            /** Read in comment and maximum comment number*/
+            String comment = (String) entity.getProperty("comment");
+            String max_str = request.getParameter("max");
+            /** Error checking to ensure null values aren't passed*/
+            if (max_str == null)
+            {
+                max_str = "5";
+            };
+            Integer max_num = Integer.parseInt(max_str);
 
-    Entity taskEntity = new Entity("Task");
-    taskEntity.setProperty("comment", commentString);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+            if (max_num > counter)
+            {
+                tasks.add(comment);
+            };
+            counter ++;
+        }
+        /** Convert to json string using gson*/
+        Gson gson = new Gson();
+        String json = gson.toJson(tasks);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
 
-    // // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
-  }
+    }
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        // Accepts comment and updates list to show messages.
+        String commentString = request.getParameter("comment");
+        list.add(commentString);
+
+        Entity taskEntity = new Entity("Task");
+        taskEntity.setProperty("comment", commentString);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(taskEntity);
+
+        // // Redirect back to the HTML page.
+        response.sendRedirect("/index.html");
+    }
 
 
 }
