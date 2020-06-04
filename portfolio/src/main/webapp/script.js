@@ -55,8 +55,9 @@ function addQuoteToDom(quote) {
  * combines all of the above code into a single Promise chain. You can use
  * whichever syntax makes the most sense to you.
  */
-function getMessageUsingArrowFunctions() {
-  fetch('/data?max=5').then(response => response.text()).then((quote) => {
+function getMessageUsingArrowFunctions(quantity) {
+  console.log(quantity)
+  fetch('/data?max=' + quantity).then(response => response.text()).then((quote) => {
     document.getElementById('quote-container').innerText = quote;
   });
 }

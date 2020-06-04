@@ -25,7 +25,11 @@
                 <img src="images/first_baby.jpg" class="figure-img img-fluid rounded" alt="Baby Picture">
                 <figcaption style="color:black" class="figure-caption">Buff Baby</figcaption>
             </figure>
-            <button onclick="getMessageUsingArrowFunctions()">Fetch Comments!</button>
+            
+            <label for="quantity">Quantity (between 1 and 5):</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="5">
+            <button onclick="getMessageUsingArrowFunctions(document.getElementById('quantity').value)">Fetch Comments!</button>
+
             <div id="quote-container"></div>
             <form action="/data" method="POST">
                   <label for="comment">Comment:</label><br>
