@@ -32,48 +32,53 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that returns some example content.*/
 @WebServlet("/data")
-public class DataServlet extends HttpServlet {
-	/** Store different messages as elements in an array to be displayed*/
-	private ArrayList<String> list;
-	@Override
-  	public void init() {
- 		list = new ArrayList<String>();
-	}
-
- @Override
- public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
- 	  /** Initialize query to retrieve comments from datastore*/
-    Query query = new Query("Task");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-    /** Iterate over entities in datastore and retrieve each comment*/
-    List<String> tasks = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      String comment = (String) entity.getProperty("comment");
-
-      tasks.add(comment);
+public class DataServlet extends HttpServlet
+{
+    /** Store different messages as elements in an array to be displayed*/
+    private ArrayList<String> list;
+    @Override
+    public void init()
+    {
+        list = new ArrayList<String>();
     }
-  /** Convert to json string using gson*/
-    Gson gson = new Gson();
-  	String json = gson.toJson(tasks);
-  	response.setContentType("application/json;");
-    response.getWriter().println(json);
 
-  }
- @Override
- public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Accepts comment and updates list to show messages.
-    String commentString = request.getParameter("comment");
-    list.add(commentString);
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        /** Initialize query to retrieve comments from datastore*/
+        Query query = new Query("Task");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        /** Iterate over entities in datastore and retrieve each comment*/
+        List<String> tasks = new ArrayList<>();
+        for (Entity entity : results.asIterable())
+        {
+            String comment = (String) entity.getProperty("comment");
 
-    Entity taskEntity = new Entity("Task");
-    taskEntity.setProperty("comment", commentString);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+            tasks.add(comment);
+        }
+        /** Convert to json string using gson*/
+        Gson gson = new Gson();
+        String json = gson.toJson(tasks);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
 
-    // // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
-  }
+    }
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        // Accepts comment and updates list to show messages.
+        String commentString = request.getParameter("comment");
+        list.add(commentString);
+
+        Entity taskEntity = new Entity("Task");
+        taskEntity.setProperty("comment", commentString);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(taskEntity);
+
+        // // Redirect back to the HTML page.
+        response.sendRedirect("/index.html");
+    }
 
 
 }
