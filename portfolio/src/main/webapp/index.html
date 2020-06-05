@@ -25,8 +25,13 @@
                 <img src="images/first_baby.jpg" class="figure-img img-fluid rounded" alt="Baby Picture">
                 <figcaption style="color:black" class="figure-caption">Buff Baby</figcaption>
             </figure>
-            <button onclick="getMessage()">Fetch a message!</button>
+            <button onclick="getMessage()">Fetch Comments!</button>
             <div id="quote-container"></div>
+            <form action="/data" method="POST">
+                  <label for="comment">Comment:</label><br>
+                  <input type="text" id="comment" name="comment"><br>
+                  <input type="submit" value="Submit">
+            </form> 
             <a href="bio.html" class='next round'>Next</a>
        </div>
 
