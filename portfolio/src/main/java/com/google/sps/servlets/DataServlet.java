@@ -69,6 +69,7 @@ public class DataServlet extends HttpServlet
                 tasks.add(comment);
             };
             counter ++;
+
         }
         /** Convert to json string using gson*/
         Gson gson = new Gson();
