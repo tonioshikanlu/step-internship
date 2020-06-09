@@ -86,6 +86,7 @@ function getMessageUsingArrowFunctions(quantity)
     fetch('/data?max=' + quantity).then(response => response.json()).then((quote) =>
     {
         console.log(quote);
+        makeList(quote);
 
     });
 };
