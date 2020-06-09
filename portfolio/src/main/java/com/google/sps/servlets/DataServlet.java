@@ -50,12 +50,26 @@ public class DataServlet extends HttpServlet
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
         /** Iterate over entities in datastore and retrieve each comment*/
+        Integer counter = 0;
         List<String> tasks = new ArrayList<>();
         for (Entity entity : results.asIterable())
         {
+            /** Read in comment and maximum comment number*/
             String comment = (String) entity.getProperty("comment");
+            String max_str = request.getParameter("max");
+            /** Error checking to ensure null values aren't passed*/
+            if (max_str == null)
+            {
+                max_str = "5";
+            };
+            Integer max_num = Integer.parseInt(max_str);
 
-            tasks.add(comment);
+            if (max_num > counter)
+            {
+                tasks.add(comment);
+            };
+            counter ++;
+
         }
         /** Convert to json string using gson*/
         Gson gson = new Gson();
