@@ -25,13 +25,14 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/** Servlet that returns user data content.*/
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/html");
+    /** Stores logged in user data or anonymus user data*/
     List<String> login_array = new ArrayList<>();
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {

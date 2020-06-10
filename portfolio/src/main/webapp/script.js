@@ -85,9 +85,7 @@ function getMessageUsingArrowFunctions(quantity)
     // Limit maximum commens shown
     fetch('/data?max=' + quantity).then(response => response.json()).then((quote) =>
     {
-        console.log(quote);
         makeList(quote);
-
     });
 };
 
@@ -103,20 +101,24 @@ async function getMessageUsingAsyncAwait()
     document.getElementById('quote-container').innerText = quote;
 };
 
+/**
+ * This function fetches the user email, the login/logout url and the
+ * boolean status of whether or not the user is logged in. The user email is 
+ * displayed in the HTML and the login/logout url is displayed in the nav bar.
+ * We use the boolean status to determine if we display the comments in the HTML.
+ */
 function getUser()
 {
     fetch('/login').then(response => response.json()).then((quote) =>
-    {
-        // Block content if user is not logged in.
+    {   
+        // quote[0] contains the users email.
         document.getElementById('user-container').innerHTML = quote[0];
+        // quote[1] contains the login/logout link url.
         document.getElementById('link-container').innerHTML = quote[1];
-        var x = document.getElementById("comment-container");
         // quote[2] contains boolean indicating if user is logged in.
-        if (quote[2] === 'true')
+        var x = document.getElementById("comment-container");
+        if (quote[2] === 'false')
         {
-            x.style.display = "block";
-        }
-        else{
              x.style.display = "none";
         }
     }
