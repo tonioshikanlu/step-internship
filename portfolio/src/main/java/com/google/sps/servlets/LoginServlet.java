@@ -35,26 +35,20 @@ public class LoginServlet extends HttpServlet {
     List<String> login_array = new ArrayList<>();
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/index.html";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      String loginStatus = Boolean.toString(userService.isUserLoggedIn());
-      login_array.add("Hello " + userEmail + "!");
-      login_array.add("<p> <a href=\"" + logoutUrl + "\">Logout</a></p>");
-      login_array.add(loginStatus);
+      login_array.add("Hello " + userService.getCurrentUser().getEmail() + "!");
+      login_array.add("<p> <a href=\"" + userService.createLogoutURL("/index.html") + "\">Logout</a></p>");
+      login_array.add(Boolean.toString(userService.isUserLoggedIn()));
       Gson gson = new Gson();
       String json = gson.toJson(login_array);
       response.getWriter().println(json);
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      String loginStatus = Boolean.toString(userService.isUserLoggedIn());
       login_array.add("<p>Hello stranger.</p>");
-      login_array.add("<p><a href=\"" + loginUrl + "\">Login</a></p>");
-      login_array.add(loginStatus);
+      login_array.add("<p><a href=\"" + userService.createLoginURL("/index.html") + "\">Login</a></p>");
+      login_array.add(Boolean.toString(userService.isUserLoggedIn()));
       Gson gson = new Gson();
       String json = gson.toJson(login_array);
       response.getWriter().println(json);
     }
   }
 }
+
