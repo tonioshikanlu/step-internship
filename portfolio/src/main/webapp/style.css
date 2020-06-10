@@ -111,3 +111,25 @@ padding-top:10em;
 color:#000;
 text-decoration:none;
 }
+
+div#quote-container ul{
+  list-style-type: none;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div#quote-container li {
+  flex: 0 0 50%;
+  border: 1px solid grey;
+  padding: 1em;
+  display: flex;
+  align-items: flex-end;
+}
+
+#comment-container {
+	background: white;
+}
+#user-container {
+  background: white;
+}

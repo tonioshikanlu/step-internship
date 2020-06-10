@@ -24,7 +24,7 @@ function getMessage()
 
     // When the request is complete, pass the response into handleResponse().
     responsePromise.then(handleResponse);
-}
+};
 
 /**
  * Handles response by converting it to text and passing the result to
@@ -41,7 +41,7 @@ function handleResponse(response)
     // When the response is converted to text, pass the result into the
     // addQuoteToDom() function.
     textPromise.then(addQuoteToDom);
-}
+};
 
 /** Adds a random quote to the DOM. */
 function addQuoteToDom(quote)
@@ -50,6 +50,27 @@ function addQuoteToDom(quote)
 
     const quoteContainer = document.getElementById('quote-container');
     quoteContainer.innerText = quote;
+};
+
+function makeList(list) {
+    // Clears comment box before listing comments
+    document.getElementById('quote-container').innerHTML = '';
+
+    // Defines unordered lists with li
+    let ul = document.createElement('ul');
+
+    document.getElementById('quote-container').appendChild(ul);
+
+    // Iterate through 2D arrayList and list out user email and comment
+    list.forEach(function (item) {
+        let li_1 = document.createElement('li');
+        let li_2 = document.createElement('li');
+        ul.appendChild(li_1);
+        ul.appendChild(li_2);
+
+        li_1.innerHTML += '<b>' + item[0] + '</b>';
+        li_2.innerHTML += item[1];
+    });
 }
 
 /**
@@ -61,12 +82,12 @@ function addQuoteToDom(quote)
 function getMessageUsingArrowFunctions(quantity)
 {
     console.log(quantity)
-    fetch('/data?max=' + quantity).then(response => response.text()).then((quote) =>
+    // Limit maximum commens shown
+    fetch('/data?max=' + quantity).then(response => response.json()).then((quote) =>
     {
-        document.getElementById('quote-container').innerText = quote;
-    }
-    );
-}
+        makeList(quote);
+    });
+};
 
 /**
  * Another way to use fetch is by using the async and await keywords. This
@@ -78,7 +99,33 @@ async function getMessageUsingAsyncAwait()
     const response = await fetch('/data');
     const quote = await response.text();
     document.getElementById('quote-container').innerText = quote;
+};
+
+/**
+ * This function fetches the user email, the login/logout url and the
+ * boolean status of whether or not the user is logged in. The user email is 
+ * displayed in the HTML and the login/logout url is displayed in the nav bar.
+ * We use the boolean status to determine if we display the comments in the HTML.
+ */
+function getUser()
+{
+    fetch('/login').then(response => response.json()).then((quote) =>
+    {   
+        // quote[0] contains the users email.
+        document.getElementById('user-container').innerHTML = quote[0];
+        // quote[1] contains the login/logout link url.
+        document.getElementById('link-container').innerHTML = quote[1];
+        // quote[2] contains boolean indicating if user is logged in.
+        var x = document.getElementById("comment-container");
+        if (quote[2] === 'false')
+        {
+             x.style.display = "none";
+        }
+    }
+    );
 }
+
+
 
 var TxtType = function (el, toRotate, period)
 {

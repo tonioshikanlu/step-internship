@@ -28,7 +28,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 /** Servlet that returns some example content.*/
 @WebServlet("/data")
@@ -51,11 +52,11 @@ public class DataServlet extends HttpServlet
         PreparedQuery results = datastore.prepare(query);
         /** Iterate over entities in datastore and retrieve each comment*/
         Integer counter = 0;
-        List<String> tasks = new ArrayList<>();
+        ArrayList<ArrayList<String>>tasks = new ArrayList<ArrayList<String>>();
         for (Entity entity : results.asIterable())
         {
             /** Read in comment and maximum comment number*/
-            String comment = (String) entity.getProperty("comment");
+            ArrayList<String> comment = (ArrayList<String>) entity.getProperty("comment");
             String max_str = request.getParameter("max");
             /** Error checking to ensure null values aren't passed*/
             if (max_str == null)
@@ -81,12 +82,15 @@ public class DataServlet extends HttpServlet
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // Accepts comment and updates list to show messages.
+        UserService userService = UserServiceFactory.getUserService();
+        // Accepts comment and updates list to show users and comments.
         String commentString = request.getParameter("comment");
-        list.add(commentString);
-
+        String userEmail = userService.getCurrentUser().getEmail();
+        ArrayList<String> emailComment = new ArrayList<String>();
+        emailComment.add(userEmail);
+        emailComment.add(commentString);
         Entity taskEntity = new Entity("Task");
-        taskEntity.setProperty("comment", commentString);
+        taskEntity.setProperty("comment", emailComment);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(taskEntity);
 
