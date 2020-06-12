@@ -75,14 +75,6 @@ public class DataServlet extends HttpServlet
                 tasks.add(comment);
             };
             counter ++;
-            Document doc =
-                Document.newBuilder().setContent(comment.get(1)).setType(Document.Type.PLAIN_TEXT).build();
-            LanguageServiceClient languageService = LanguageServiceClient.create();
-            Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-            float score = sentiment.getScore();
-            languageService.close();
-            
-            System.out.println(score);
 
         }
         /** Convert to json string using gson*/
