@@ -13,11 +13,18 @@
 // limitations under the License.
 
 package com.google.sps;
-
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    // throw new UnsupportedOperationException("TODO: Implement this method.");    
+    List<String> attendees = new ArrayList<String>(request.getAttendees());
+    
+    return null;
+
   }
 }
