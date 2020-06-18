@@ -29,8 +29,40 @@ import java.util.Arrays;
 */
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    HashMap<String, List<TimeRange>> attendeesTimes = new HashMap<String, List<TimeRange>>();    
-    List<String> attendees = new ArrayList<String>(request.getAttendees());
+    Collection<String> mandatoryAttendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+    Collection<TimeRange> mandatoryAvaliableTimes = avaliableTimesQuery(events, request, mandatoryAttendees);
+	Collection<TimeRange> optionalAvaliableTimes = avaliableTimesQuery(events,  request, optionalAttendees);
+  	List<TimeRange> allAvaliableTimes = new ArrayList<TimeRange>();
+  	// Add times that also work for the optional attedees and remove times that don't also 
+  	// work for the optional attendees from the avaliable times collection.
+  	for (TimeRange optionalRange : optionalAvaliableTimes){
+  		for (TimeRange mandatoryRange : mandatoryAvaliableTimes){
+  			if (optionalRange.duration() >= request.getDuration()){
+  				if (mandatoryRange.contains(optionalRange) || mandatoryRange.overlaps(optionalRange)){
+  					allAvaliableTimes.add(mandatoryRange);
+  				}
+  			}
+  		}
+  	}
+  	/** Some edge cases
+	*/
+	// Return times of only optional attendees if no mandatory attendees are indicated.
+  	if (mandatoryAttendees.isEmpty()){
+  		return optionalAvaliableTimes;
+  	}
+  	// Return times of only mandatory attendees if no optional attendees are indicated.
+  	if (optionalAvaliableTimes.isEmpty()){
+  		return mandatoryAvaliableTimes;
+  	}
+  	// Return avaliable times for both mandatory and optional attendees.
+  	return allAvaliableTimes;
+  }
+  /** Helper function that determines the times the attendees passed into it are avaliable.
+  */
+  public Collection<TimeRange> avaliableTimesQuery(Collection<Event> events, MeetingRequest request, Collection<String> attendeesRequested) {
+  	HashMap<String, List<TimeRange>> attendeesTimes = new HashMap<String, List<TimeRange>>();    
+    List<String> attendees = new ArrayList<String>(attendeesRequested);
     // We need to map the attendees in the request to the times this individual is not free.
 	for (String attendee : attendees){
 		for (Event e : events) {
@@ -52,8 +84,7 @@ public final class FindMeetingQuery {
     	@Override
     	public int compare(TimeRange a, TimeRange b) {
       	return Long.compare(a.end(), b.end());
-	}});
-	
+	}});	
 	Integer startDay = TimeRange.WHOLE_DAY.start();
 	Integer endDay = TimeRange.WHOLE_DAY.end();
 	List<TimeRange> stack = new ArrayList<TimeRange>();
@@ -75,10 +106,8 @@ public final class FindMeetingQuery {
 					else {
 						stack.add(range);
 					}
-
 			}
 	}
-
 	List<TimeRange> avaliableTimes = new ArrayList<TimeRange>();
 	Integer currentStart;
 	Integer currentEnd;
@@ -108,7 +137,6 @@ public final class FindMeetingQuery {
 				}
 			}			
 	}
-
 	/** Some edge cases
 	*/
 	// If there are no attendes the whole day is avaliable.
@@ -125,8 +153,6 @@ public final class FindMeetingQuery {
     	public int compare(TimeRange a, TimeRange b) {
       	return Long.compare(a.end(), b.end());
 	}});
-	
     return avaliableTimes;
-
   }
 }
