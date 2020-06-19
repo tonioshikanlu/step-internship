@@ -33,6 +33,14 @@ public final class FindMeetingQuery {
     Collection<String> optionalAttendees = request.getOptionalAttendees();
     Collection<TimeRange> mandatoryAvaliableTimes = avaliableTimesQuery(events, request, mandatoryAttendees);
 	Collection<TimeRange> optionalAvaliableTimes = avaliableTimesQuery(events,  request, optionalAttendees);
+  	// Return times of only optional attendees if no mandatory attendees are indicated.
+  	if (mandatoryAttendees.isEmpty()){
+  		return optionalAvaliableTimes;
+  	}
+  	// Return times of only mandatory attendees if no optional attendees are indicated.
+  	if (optionalAvaliableTimes.isEmpty()){
+  		return mandatoryAvaliableTimes;
+  	}
   	List<TimeRange> allAvaliableTimes = new ArrayList<TimeRange>();
   	// Add times that also work for the optional attedees and remove times that don't also 
   	// work for the optional attendees from the avaliable times collection.
@@ -44,16 +52,6 @@ public final class FindMeetingQuery {
   				}
   			}
   		}
-  	}
-  	/** Some edge cases
-	*/
-	// Return times of only optional attendees if no mandatory attendees are indicated.
-  	if (mandatoryAttendees.isEmpty()){
-  		return optionalAvaliableTimes;
-  	}
-  	// Return times of only mandatory attendees if no optional attendees are indicated.
-  	if (optionalAvaliableTimes.isEmpty()){
-  		return mandatoryAvaliableTimes;
   	}
   	// Return avaliable times for both mandatory and optional attendees.
   	return allAvaliableTimes;
@@ -102,12 +100,12 @@ public final class FindMeetingQuery {
 					Integer newEnd = Math.max(lastRange.end(), range.end());
 					stack.remove(stack.size() - 1);
 					stack.add(TimeRange.fromStartEnd(newStart, newEnd, false));
-				}
+					}
 					else {
 						stack.add(range);
 					}
+				}
 			}
-	}
 	List<TimeRange> avaliableTimes = new ArrayList<TimeRange>();
 	Integer currentStart;
 	Integer currentEnd;
